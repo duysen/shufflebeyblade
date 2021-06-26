@@ -5,7 +5,155 @@
 		table {
 			border: 1px solid black;
 			border-collapse: collapse;
+			margin: 10px;<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		table {
+			border: 1px solid black;
+			border-collapse: collapse;
 			margin: 10px;
+		}
+		table tr td, table tr th {
+			border: 1px solid black;
+		}
+		#shuffleTable tr td {
+			text-align: right;
+		}
+		#eloCalcTable tr td {
+			text-align: center;
+		}
+		#eloCalcTable tr td input {
+			width: 50px;
+		}
+		#resultATable {
+			width: 100%;
+			margin: 0;
+		}
+		#resultATable tr td {
+			width: calc(100% / 3);
+		}
+		#resultBTable {
+			width: 100%;
+			margin: 0;
+		}
+		#resultBTable tr td {
+			width: calc(100% / 3);
+		}
+	</style>
+</head>
+
+<body onload="doTheWork()">
+
+	<table id="shuffleTable">
+		<tr>
+			<th>Top</th>
+			<th>Ring</th>
+			<th>Driver</th>
+		</tr>
+		<tr>
+			<td id="top"></td>
+			<td id="ring"></td>
+			<td id="driver"></td>
+		</tr>
+	</table>
+
+	<table id="eloCalcTable">
+		<tr>
+			<td>team A<br><input class="A" type="number"><input class="A" type="number"><input class="A" type="number"></td>
+			<td><select id="resultSel"><option value="1">wins against</option><option value="0.5">draws against</option><option value="0">loses to</option></select></td>
+			<td>team B<br><input class="B" type="number"><input class="B" type="number"><input class="B" type="number"></td>
+		</tr>
+		<tr>
+			<td colspan="3" onclick="calcEloA()">calculate</td>
+		</tr>
+		<tr>
+			<td>team A<br><table id="resultATable"><tr><td class="rA"></td><td class="rA"></td><td class="rA"></td></tr></table></td>
+			<td></td>
+			<td>team B<br><table id="resultBTable"><tr><td class="rB"></td><td class="rB"></td><td class="rB"></td></tr></table></td>
+		</tr>
+	</table>
+
+	<script>
+		var arr1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+		var arr2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+		var arr3 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+
+		function shuffleArray(array) {
+    	for (var i = array.length - 1; i > 0; i--) {
+      	var j = Math.floor(Math.random() * (i + 1));
+      	var temp = array[i];
+      	array[i] = array[j];
+      	array[j] = temp;
+    	}
+		}
+
+		function doTheWork() {
+			//shuffleArray(arr1);
+			shuffleArray(arr2);
+			shuffleArray(arr3);
+
+			document.getElementById("top").innerHTML = arr1.join("<br>");
+			document.getElementById("ring").innerHTML = arr2.join("<br>");
+			document.getElementById("driver").innerHTML = arr3.join("<br>");
+		}
+
+		function calcEloA() {
+			let A = document.getElementById("resultSel").value;
+
+			let partA1 = parseInt(document.getElementsByClassName("A")[0].value, 10);
+			let partA2 = parseInt(document.getElementsByClassName("A")[1].value, 10);
+			let partA3 = parseInt(document.getElementsByClassName("A")[2].value, 10);
+
+			let partB1 = parseInt(document.getElementsByClassName("B")[0].value, 10);
+			let partB2 = parseInt(document.getElementsByClassName("B")[1].value, 10);
+			let partB3 = parseInt(document.getElementsByClassName("B")[2].value, 10);
+
+			let Ra = (partA1 + partA2 + partA3) / 3;
+			let Rb = (partB1 + partB2 + partB3) / 3;
+
+			let Qa = Math.pow(10, Ra / 400);
+			let Qb = Math.pow(10, Rb / 400);
+
+			let Ea = Qa / (Qa + Qb);
+			let Eb = Qb / (Qa + Qb);
+
+			let K = 0;
+			if (Ra < 1600) {K = 35} else if (Ra >= 1600 && Ra < 2000) {K = 30} else if (Ra >= 2000 && Ra < 2400) {K = 25} else {K = 20}
+
+			let deltaRa = K * (A - Ea);
+
+			if (deltaRa > 0) {
+				deltaRa *= 2;
+			}
+			if (deltaRa > 0) {
+				deltaRa /= 2;
+			}
+
+			for (let i = 0; i < 3; i++) {
+				let result = parseInt(document.getElementsByClassName("A")[i].value, 10) + deltaRa;
+				document.getElementsByClassName("rA")[i].innerHTML = Math.round(result);
+			}
+
+			if (Rb < 1600) {K = 35} else if (Rb >= 1600 && Rb < 2000) {K = 30} else if (Rb >= 2000 && Rb < 2400) {K = 25} else {K = 20}
+
+			let deltaRb = K * ((1 - A) - Eb);
+
+			if (deltaRb > 0) {
+				deltaRb *= 2;
+			}
+			if (deltaRb > 0) {
+				deltaRb /= 2;
+			}
+
+			for (let i = 0; i < 3; i++) {
+				let result = parseInt(document.getElementsByClassName("B")[i].value, 10) + deltaRb;
+				document.getElementsByClassName("rB")[i].innerHTML = Math.round(result);
+			}
+		}
+	</script>
+</body>
+</html>
 		}
 		table tr td, table tr th {
 			border: 1px solid black;

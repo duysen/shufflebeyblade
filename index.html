@@ -11,7 +11,10 @@
 			border: 1px solid black;
 		}
 		#shuffleTable tr td {
-			text-align: right;
+			width: 60px;
+		}
+		#shuffleTable tr td {
+			text-align: center;
 		}
 		#eloCalcTable tr td {
 			text-align: center;
@@ -68,9 +71,12 @@
 	</table>
 
 	<script>
-		var arr1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-		var arr2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-		var arr3 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+		var arr1 = ["A1 - 0", "A2 - 1", "A3 - 2", "A4 - 3", "D1 - 4", "D2 - 5", "D3 - 6", "D4 - 7", "S1 - 8", "S2 - 9", "S3 - a", "S4 - b", "B1 - c", "B2 - d", "B3 - e", "B4 - f"];
+		var arr2 = ["A1 - 0", "A2 - 1", "A3 - 2", "A4 - 3", "D1 - 4", "D2 - 5", "D3 - 6", "D4 - 7", "S1 - 8", "S2 - 9", "S3 - a", "S4 - b", "B1 - c", "B2 - d", "B3 - e", "B4 - f"];
+		var arr3 = ["A1 - 0", "A2 - 1", "A3 - 2", "A4 - 3", "D1 - 4", "D2 - 5", "D3 - 6", "D4 - 7", "S1 - 8", "S2 - 9", "S3 - a", "S4 - b", "B1 - c", "B2 - d", "B3 - e", "B4 - f"];
+
+		var leftRightTyped = 0;
+		var upDownTyped = 0;
 
 		function randomize(arr) {
  
@@ -89,6 +95,8 @@
 			document.getElementById("top").innerHTML = arr1.join("<br>");
 			document.getElementById("ring").innerHTML = arr2.join("<br>");
 			document.getElementById("driver").innerHTML = arr3.join("<br>");
+
+			document.getElementsByClassName("A")[0].focus();
 		}
 
 		function calcEloA() {
@@ -119,7 +127,7 @@
 			if (deltaRa > 0) {
 				deltaRa *= 2;
 			}
-			if (deltaRa < 0) {
+			if (deltaRa > 0) {
 				deltaRa /= 2;
 			}
 
@@ -135,7 +143,7 @@
 			if (deltaRb > 0) {
 				deltaRb *= 2;
 			}
-			if (deltaRb < 0) {
+			if (deltaRb > 0) {
 				deltaRb /= 2;
 			}
 
@@ -143,6 +151,52 @@
 				let result = parseInt(document.getElementsByClassName("B")[i].value, 10) + deltaRb;
 				document.getElementsByClassName("rB")[i].innerHTML = Math.round(result);
 			}
+		}
+
+		document.onkeydown = function(e) {
+			if (e.keyCode === 37) {
+				e.preventDefault();
+				leftRightTyped--;
+				updateInputFocus();
+			}
+
+			if (e.keyCode === 39) {
+				e.preventDefault();
+				leftRightTyped++;
+				updateInputFocus();
+			}
+
+			if (e.keyCode === 38) {
+				e.preventDefault();
+				upDownTyped++;
+				updateMatchResultSelect();
+			}
+
+			if (e.keyCode === 40) {
+				e.preventDefault();
+				upDownTyped--;
+				updateMatchResultSelect();
+			}
+
+			if (e.keyCode === 13) {
+				e.preventDefault();
+				calcEloA();
+			}
+		}
+
+		function updateInputFocus() {
+			if (leftRightTyped % 6 === 0) {	document.getElementsByClassName("A")[0].focus();}
+			if (leftRightTyped % 6 === 1) {	document.getElementsByClassName("A")[1].focus();}
+			if (leftRightTyped % 6 === 2) {	document.getElementsByClassName("A")[2].focus();}
+			if (leftRightTyped % 6 === 3) {	document.getElementsByClassName("B")[0].focus();}
+			if (leftRightTyped % 6 === 4) {	document.getElementsByClassName("B")[1].focus();}
+			if (leftRightTyped % 6 === 5) {	document.getElementsByClassName("B")[2].focus();}
+		}
+
+		function updateMatchResultSelect() {
+			if (Math.abs(upDownTyped) % 3 === 0) {	document.getElementById("resultSel").selectedIndex = "0";}
+			if (Math.abs(upDownTyped) % 3 === 1) {	document.getElementById("resultSel").selectedIndex = "1";}
+			if (Math.abs(upDownTyped) % 3 === 2) {	document.getElementById("resultSel").selectedIndex = "2";}
 		}
 	</script>
 </body>
